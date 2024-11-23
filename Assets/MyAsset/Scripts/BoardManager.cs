@@ -5,7 +5,9 @@ using UnityEngine.Tilemaps;
 public class BoardManager : MonoBehaviour
 {
     private Tilemap m_Tilemap;
+    private Grid m_Grid;
     public GameObject cameraObj;
+    public PlayerController player;
 
     public int height;
     public int width;
@@ -22,6 +24,7 @@ public class BoardManager : MonoBehaviour
     public void Start()
     {
         m_Tilemap = GetComponentInChildren<Tilemap>();
+        m_Grid = GetComponent<Grid>();
     }
 
     public virtual void Update()
@@ -61,5 +64,21 @@ public class BoardManager : MonoBehaviour
                 this.m_Tilemap.SetTile(new Vector3Int(x, y, 0), tile); 
             }
         }
+
+        this.player.Spawn(this, new Vector2Int(1, 1));
+    }
+
+    public virtual Vector3 CellToWorld(Vector2Int cellIndex)
+    {
+        return m_Grid.GetCellCenterWorld((Vector3Int)cellIndex);
+    }
+
+    public virtual CellData GetCellData(Vector2Int cellIndex)
+    {
+        if (cellIndex.x < 0 || cellIndex.x >= width || cellIndex.y < 0  || cellIndex.y >= height)
+        {
+            return null;
+        }
+        return m_boardData[cellIndex.x, cellIndex.y];
     }
 }
