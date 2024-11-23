@@ -21,19 +21,19 @@ public class BoardManager : MonoBehaviour
 
     private CellData[,] m_boardData;
 
-    public void Start()
+    public void Awake()
     {
         m_Tilemap = GetComponentInChildren<Tilemap>();
         m_Grid = GetComponent<Grid>();
     }
 
-    public virtual void Update()
-    {
-       if (Input.GetKeyDown(KeyCode.G))
-       {
-            this.GenMap();
-       }
-    }
+    //public virtual void Update()
+    //{
+    //   if (Input.GetKeyDown(KeyCode.G))
+    //   {
+    //        this.GenMap();
+    //   }
+    //}
 
     public virtual void GenMap()
     {
@@ -65,7 +65,7 @@ public class BoardManager : MonoBehaviour
             }
         }
 
-        this.player.Spawn(this, new Vector2Int(1, 1));
+        //this.player.Spawn(this, new Vector2Int(1, 1));
     }
 
     public virtual Vector3 CellToWorld(Vector2Int cellIndex)
