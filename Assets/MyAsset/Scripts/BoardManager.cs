@@ -1,6 +1,8 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
+using System.Linq;
 
 public class BoardManager : MonoBehaviour
 {
@@ -13,10 +15,18 @@ public class BoardManager : MonoBehaviour
     public int width;
     public Tile[] groundTiles;
     public Tile[] wallTiles;
+    private List<Vector2Int> m_emptyCellList;
+
+    public Vector2Int foodRange;
+
+    //public GameObject foodPrefab;
+    public FoodObject[] foodPrefab;
+
 
     public class CellData
     {
         public bool passable;
+        public CellObject containGameObj;
     }
 
     private CellData[,] m_boardData;
@@ -41,6 +51,7 @@ public class BoardManager : MonoBehaviour
 
         m_Tilemap.ClearAllTiles();
         m_boardData = new CellData[width, height];
+        this.m_emptyCellList = new List<Vector2Int>();
 
         for (int y = 0; y < height; y++)
         {
@@ -58,14 +69,15 @@ public class BoardManager : MonoBehaviour
                 {
                     tile = groundTiles[Random.Range(0, groundTiles.Length)];
                     m_boardData[x, y].passable = true;
-                }
 
-                int tileNumber = Random.Range(0, groundTiles.Length);
+                    m_emptyCellList.Add(new Vector2Int(x, y));
+                }
                 this.m_Tilemap.SetTile(new Vector3Int(x, y, 0), tile); 
             }
         }
 
-        //this.player.Spawn(this, new Vector2Int(1, 1));
+        m_emptyCellList.Remove(new Vector2Int(1, 1));
+        this.GenFood();
     }
 
     public virtual Vector3 CellToWorld(Vector2Int cellIndex)
@@ -80,5 +92,26 @@ public class BoardManager : MonoBehaviour
             return null;
         }
         return m_boardData[cellIndex.x, cellIndex.y];
+    }
+
+    void GenFood()
+    {
+        int foodCount = Random.Range(this.foodRange.x, this.foodRange.y);
+
+        for (int i = 0; i < foodCount; i++)
+        {
+            int randomIndex = Random.Range(0, this.m_emptyCellList.Count);
+            Vector2Int coord = m_emptyCellList[randomIndex];
+
+            m_emptyCellList.RemoveAt(randomIndex);
+            CellData data = m_boardData[coord.x, coord.y];
+
+            int randomFood = Random.Range(0, this.foodPrefab.Count());
+            FoodObject newFood = Instantiate(this.foodPrefab[randomFood]);
+
+            newFood.transform.position = CellToWorld(coord);
+            data.containGameObj = newFood;
+        }
+
     }
 }
