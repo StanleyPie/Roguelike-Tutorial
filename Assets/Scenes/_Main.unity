@@ -739,6 +739,9 @@ MonoBehaviour:
   foodPrefab:
   - {fileID: 7989206239021794650, guid: c72165a5fcba26d49a2efee7a31a6bb4, type: 3}
   - {fileID: 8645196129716639819, guid: fad68b9375a595e4ebecdb8abe2caf46, type: 3}
+  obstacleRange: {x: 6, y: 10}
+  obstaclePrefab:
+  - {fileID: 8530975247005918414, guid: 243412657294f57499415557acf92eb6, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
