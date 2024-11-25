@@ -91,6 +91,11 @@ public class BoardManager : MonoBehaviour
         return m_boardData[cellIndex.x, cellIndex.y];
     }
 
+    public virtual Tile GetCellTile(Vector2Int cellIndex)
+    {
+        return m_Tilemap.GetTile<Tile>(new Vector3Int(cellIndex.x, cellIndex .y, 0));
+    }
+
     void GenFood()
     {
         int foodCount = Random.Range(this.foodRange.x, this.foodRange.y + 1);
