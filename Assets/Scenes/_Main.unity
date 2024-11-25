@@ -743,8 +743,9 @@ MonoBehaviour:
   obstaclePrefab:
   - {fileID: 8530975247005918414, guid: 243412657294f57499415557acf92eb6, type: 3}
   - {fileID: 8530975247005918414, guid: 1624cc2a8a5069b4f9c785262156387c, type: 3}
-  - {fileID: 8530975247005918414, guid: 3ef4ffe758746ca4dbc4147d5adedcf1, type: 3}
+  - {fileID: 635083751932521473, guid: 3ef4ffe758746ca4dbc4147d5adedcf1, type: 3}
   - {fileID: 8530975247005918414, guid: 786e8ec63fb72d64d87d2a240e5ef2a8, type: 3}
+  exitObject: {fileID: 7933801184311929528, guid: 04823cca79d0d2345bb0a3371b9e8283, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

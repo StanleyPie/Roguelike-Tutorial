@@ -26,6 +26,9 @@ public class BoardManager : MonoBehaviour
     public Vector2Int obstacleRange;
     public WallObject[] obstaclePrefab;
 
+    [Header("exit")]
+    public ExitObject exitObject;
+
 
     public class CellData
     {
@@ -45,7 +48,7 @@ public class BoardManager : MonoBehaviour
     {
         this.cameraObj.transform.position = new Vector3(width / 2, height / 2, -10);
 
-        m_Tilemap.ClearAllTiles();
+        //m_Tilemap.ClearAllTiles();
         m_boardData = new CellData[width, height];
         this.m_emptyCellList = new List<Vector2Int>();
 
@@ -71,10 +74,31 @@ public class BoardManager : MonoBehaviour
                 this.m_Tilemap.SetTile(new Vector3Int(x, y, 0), tile); 
             }
         }
+        Vector2Int endCoord = new Vector2Int(width - 2, height - 2);
+        AddObject(exitObject, endCoord);
+        m_emptyCellList.Remove(endCoord);
 
         m_emptyCellList.Remove(new Vector2Int(1, 1));
         this.GenObstacles();
         this.GenFood();
+    }
+
+    public virtual void CleanUp()
+    {
+        if (m_boardData == null) return;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                var celldata = m_boardData[x, y];
+                if (celldata.containGameObj != null)
+                {
+                    Destroy(celldata.containGameObj.gameObject);
+                }
+                SetCellTile(new Vector2Int(x, y), null);
+            }
+        }
     }
 
     public virtual Vector3 CellToWorld(Vector2Int cellIndex)

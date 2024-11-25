@@ -12,7 +12,6 @@ public class WallObject_2 : WallObject
         if (this.health == 1)
         {
             GameManager.instance.board.SetCellTile(m_Cell, m_breakObj);
-            Debug.Log("hjurh");
             return false;
         }
 

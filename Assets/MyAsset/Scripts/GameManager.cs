@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public UIDocument uiDoc;
     private Label m_FoodLabel;
 
+    private int m_level = 1;
+
     private void Awake()
     {
         if (instance != null)
@@ -47,8 +49,16 @@ public class GameManager : MonoBehaviour
         m_turnPlayer = new TurnManager();
         m_turnPlayer.OnTick += OnTurnHappen;
 
+        this.NewMap();
+    }
+
+    public void NewMap()
+    {
+        board.CleanUp();
         board.GenMap();
         player.Spawn(board, new Vector2Int(1, 1));
+
+        m_level++;
     }
 
 
