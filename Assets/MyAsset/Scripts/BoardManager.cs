@@ -11,6 +11,7 @@ public class BoardManager : MonoBehaviour
     public GameObject cameraObj;
     public PlayerController player;
 
+
     [Header("Map")]
     public int height;
     public int width;
@@ -94,7 +95,9 @@ public class BoardManager : MonoBehaviour
                 var celldata = m_boardData[x, y];
                 if (celldata.containGameObj != null)
                 {
-                    Destroy(celldata.containGameObj.gameObject);
+                    GameObject obj = celldata.containGameObj.gameObject;
+                    if (!obj.scene.IsValid()) return;
+                    Destroy(obj);
                 }
                 SetCellTile(new Vector2Int(x, y), null);
             }

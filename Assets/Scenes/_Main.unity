@@ -645,6 +645,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   board: {fileID: 1423865323}
   player: {fileID: 745400670}
+  foodAmount: 10
   uiDoc: {fileID: 661884422}
 --- !u!4 &1390282663
 Transform:

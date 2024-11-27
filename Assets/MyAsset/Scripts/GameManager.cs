@@ -11,9 +11,13 @@ public class GameManager : MonoBehaviour
     public PlayerController player;
     public TurnManager m_turnPlayer {  get; private set; }
 
-    private int m_FoodAmount = 100;
+    public int startFood = 100;
+    private int m_foodAmount;
     public UIDocument uiDoc;
     private Label m_FoodLabel;
+    private VisualElement m_VisualElement;
+    private Label m_GameOverMEssage;
+
 
     private int m_level = 1;
 
@@ -44,12 +48,29 @@ public class GameManager : MonoBehaviour
     void SetUp()
     {
         m_FoodLabel = uiDoc.rootVisualElement.Q<Label>("FoodLabel");
-        m_FoodLabel.text = "food : " + m_FoodAmount;
+        m_FoodLabel.text = "food : " + m_foodAmount;
+        m_VisualElement = uiDoc.rootVisualElement.Q<VisualElement>("GameOverPanel");
+        m_GameOverMEssage = m_VisualElement.Q<Label>("GameOverMessage");
 
         m_turnPlayer = new TurnManager();
         m_turnPlayer.OnTick += OnTurnHappen;
 
-        this.NewMap();
+        this.StartNewGame();
+    }
+    
+    public void StartNewGame()
+    {
+        m_VisualElement.style.visibility = Visibility.Hidden;
+
+        m_level = 1;
+        m_foodAmount = startFood;
+        m_FoodLabel.text = "food : " + m_foodAmount;
+
+        board.CleanUp();
+        board.GenMap();
+        player.Init();
+        player.Spawn(board, new Vector2Int(1, 1));
+
     }
 
     public void NewMap()
@@ -69,7 +90,14 @@ public class GameManager : MonoBehaviour
 
     public void ChangeFood(int amount)
     {
-        m_FoodAmount += amount;
-        m_FoodLabel.text = "food : " + m_FoodAmount;
+        m_foodAmount += amount;
+        m_FoodLabel.text = "food : " + m_foodAmount;
+
+        if (m_foodAmount <= 0)
+        {
+            player.GameOver();
+            this.m_VisualElement.style.visibility = Visibility.Visible;
+            this.m_GameOverMEssage.text = "Game is over!\n\n you have traveled through: " + m_level + " levels";
+        }
     }
 }

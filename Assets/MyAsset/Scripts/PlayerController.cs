@@ -5,21 +5,73 @@ public class PlayerController : MonoBehaviour
 {
     private BoardManager m_BoardManager;
     private Vector2Int m_CellPosition;
+    private bool m_isGameOver = false;
+
+    public float speed = 5f;
+    private bool m_isMoving;
+    private Vector3 m_moveTarget;
+
+    public void GameOver()
+    {
+        this.m_isGameOver = true;
+    }
+
+    public void Init()
+    {
+        this.m_isMoving = false;
+        this.m_isGameOver = false ;
+    }
 
     public virtual void Spawn(BoardManager newBoardManager, Vector2Int newPos)
     {
         m_BoardManager = newBoardManager;
-        this.MoveTo(newPos);
+        this.MoveTo(newPos, true);
     }
 
-    public virtual void MoveTo(Vector2Int newPos)
+    public virtual void MoveTo(Vector2Int newPos, bool immediate = false)
     {
         this.m_CellPosition = newPos;
-        transform.position = m_BoardManager.CellToWorld(newPos);
+
+        if (!immediate)
+        {
+            m_isMoving = true;
+            m_moveTarget = m_BoardManager.CellToWorld(newPos);
+        }
+        else
+        {
+            m_isMoving = false;
+            transform.position = m_BoardManager.CellToWorld(newPos);
+        }
     }
 
     public void Update()
     {
+        if (this.m_isGameOver)
+        {
+            if (Keyboard.current.enterKey.wasPressedThisFrame)
+            {
+                GameManager.instance.StartNewGame();
+            }
+            return;
+
+        }
+
+        if (this.m_isMoving)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, m_moveTarget, speed * Time.deltaTime);
+
+            if (transform.position == m_moveTarget)
+            {
+                m_isMoving = false;
+                var cellData = m_BoardManager.GetCellData(m_CellPosition);
+                if (cellData.containGameObj != null)
+                {
+                    cellData.containGameObj.PlayerEnter();
+                }
+            }
+            return;
+        }
+
         Vector2Int newCellTarget = m_CellPosition;
         bool hasMoved = false;
 
@@ -58,7 +110,7 @@ public class PlayerController : MonoBehaviour
                 else if (cellData.containGameObj.PlayerWantsToEnter())
                 {
                     MoveTo(newCellTarget);
-                    cellData.containGameObj.PlayerEnter();
+                    //cellData.containGameObj.PlayerEnter();
                 }
             }
         }
