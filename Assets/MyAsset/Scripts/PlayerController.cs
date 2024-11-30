@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,13 @@ public class PlayerController : MonoBehaviour
     public float speed = 5f;
     private bool m_isMoving;
     private Vector3 m_moveTarget;
+
+    private Animator m_Animator;
+
+    private void Awake()
+    {
+        m_Animator = GetComponent<Animator>();
+    }
 
     public void GameOver()
     {
@@ -36,6 +44,7 @@ public class PlayerController : MonoBehaviour
         {
             m_isMoving = true;
             m_moveTarget = m_BoardManager.CellToWorld(newPos);
+
         }
         else
         {
@@ -63,6 +72,8 @@ public class PlayerController : MonoBehaviour
             if (transform.position == m_moveTarget)
             {
                 m_isMoving = false;
+                m_Animator.SetBool ("moving" , false);
+
                 var cellData = m_BoardManager.GetCellData(m_CellPosition);
                 if (cellData.containGameObj != null)
                 {
@@ -105,14 +116,28 @@ public class PlayerController : MonoBehaviour
 
                 if (cellData.containGameObj == null)
                 {
+                    m_Animator.SetBool("moving", true);
                     this.MoveTo(newCellTarget);
                 }
-                else if (cellData.containGameObj.PlayerWantsToEnter())
+                else
                 {
-                    MoveTo(newCellTarget);
-                    //cellData.containGameObj.PlayerEnter();
+                    StartCoroutine(this.AttackDura());
+
+                    if (cellData.containGameObj.PlayerWantsToEnter())
+                    {
+                        MoveTo(newCellTarget);
+                    }
                 }
             }
         }
+    }
+
+    IEnumerator AttackDura()
+    {
+        m_Animator.SetBool("attack", true);
+
+        yield return new WaitForSeconds(0.1f);
+
+        m_Animator.SetBool("attack", false);
     }
 }
