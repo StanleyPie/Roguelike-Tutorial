@@ -27,6 +27,10 @@ public class BoardManager : MonoBehaviour
     public Vector2Int obstacleRange;
     public WallObject[] obstaclePrefab;
 
+    [Header("Obstacles")]
+    public Vector2Int enemyRange;
+    public Enemy[] enemyTypes;
+
     [Header("exit")]
     public ExitObject exitObject;
 
@@ -82,6 +86,7 @@ public class BoardManager : MonoBehaviour
         m_emptyCellList.Remove(new Vector2Int(1, 1));
         this.GenObstacles();
         this.GenFood();
+        this.GenEnemy();
     }
 
     public virtual void CleanUp()
@@ -157,6 +162,24 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    void GenEnemy()
+    {
+        int randomCount = Random.Range(this.enemyRange.x, this.enemyRange.y + 1);
+
+        for (int i = 0; i < randomCount; i++)
+        {
+            int randomIndex = Random.Range(0, this.m_emptyCellList.Count);
+            Vector2Int coord = m_emptyCellList[randomIndex];
+
+            m_emptyCellList.RemoveAt(randomIndex);
+
+            int randomObj = Random.Range(0, this.enemyTypes.Count());
+            Enemy enemy = Instantiate(this.enemyTypes[randomObj]);
+            AddObject(enemy, coord);
+        }
+    }
+
+
     public void SetCellTile(Vector2Int cellIndex, Tile tile)
     {
         m_Tilemap.SetTile(new Vector3Int(cellIndex.x, cellIndex.y, 0), tile);
@@ -169,4 +192,7 @@ public class BoardManager : MonoBehaviour
         data.containGameObj = obj;
         obj.Init(coord);
     }
+
+
+
 }

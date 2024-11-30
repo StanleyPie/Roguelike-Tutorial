@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     private BoardManager m_BoardManager;
-    private Vector2Int m_CellPosition;
+    public Vector2Int m_CellPosition { get; private set;}
     private bool m_isGameOver = false;
 
     public float speed = 5f;
